@@ -40,19 +40,20 @@ def charger_donnees(url_drive):
     """Fonction pour charger le CSV directement depuis Google Drive."""
     url_direct = obtenir_lien_direct_drive(url_drive)
     try:
-        # Lecture du CSV depuis l'URL Google Drive
-        # Par défaut, Google Drive exporte avec des virgules (",")
-        return pd.read_csv(url_direct, sep=",")
-    except Exception:
-        try:
-            # Sécurité au cas où le séparateur exporté serait un point-virgule (";")
-            return pd.read_csv(url_direct, sep=";")
-        except Exception as e:
-            st.error(
-                f"🚨 Impossible de lire le fichier depuis Google Drive."
-                f"Vérifiez que le fichier est bien partagé en mode 'Lecteur public'. Erreur : {e}"
-            )
-            return None
+        # On tente de lire le fichier
+        df_temp = pd.read_csv(url_direct)
+
+        # Si Pandas a mis toutes les colonnes dans une seule (à cause des ';')
+        if df_temp.shape[1] <= 1:
+            df_temp = pd.read_csv(url_direct, sep=";")
+
+        # Nettoyage des espaces cachés dans les noms de colonnes (ex: "Catégorie " -> "Catégorie")
+        df_temp.columns = df_temp.columns.str.strip()
+
+        return df_temp
+    except Exception as e:
+        st.error(f"🚨 Erreur lors de la lecture du fichier : {e}")
+        return None
 
 
 # Chargement du catalogue depuis Google Drive
