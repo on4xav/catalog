@@ -8,32 +8,44 @@ st.set_page_config(page_title="Mon Catalogue Produits", layout="wide")
 st.title("🕯️ Catalogue de Produits en Ligne")
 st.write("Bienvenue sur notre catalogue. Retrouvez toutes nos références ci-dessous.")
 
-# --- CHARGEMENT DES DONNÉES (CSV) ---
-# Cette ligne est la plus robuste : elle cherche le fichier juste à côté du script main.py
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(BASE_DIR, "catalogue.csv")
+# --- CHARGEMENT DES DONNÉES (GOOGLE DRIVE) ---
+# REMPLACEZ LE LIEN CI-DESSOUS PAR VOTRE LIEN GOOGLE DRIVE COPIÉ
+LIEN_GOOGLE_DRIVE = "https://drive.google.com/file/d/1UhleUeHIKmFjsGXFRqahqpgj4Cklb4Fz/view?usp=sharing"
 
 
 @st.cache_data
-def charger_donnees(chemin):
-    """Fonction pour charger le fichier CSV de manière robuste."""
-    if not os.path.exists(chemin):
-        st.error(f"⚠️ Erreur : Le fichier CSV est introuvable ici : {chemin}")
-        return None
+def obtenir_lien_direct_drive(lien_partage):
+    """Transforme un lien de partage Google Drive en lien de téléchargement direct."""
     try:
-        # On essaie d'abord de lire avec un point-virgule (standard Excel français)
-        return pd.read_csv(chemin, sep=";")
+        if "/file/d/" in lien_partage:
+            id_fichier = lien_partage.split("/file/d/")[1].split("/")[0]
+            return f"https://docs.google.com/spreadsheets/d/{id_fichier}/export?format=csv"
+    except Exception as e:
+        st.error(f"Erreur lors de la configuration du lien Google Drive : {e}")
+    return lien_partage
+
+
+@st.cache_data
+def charger_donnees(url_drive):
+    """Fonction pour charger le CSV directement depuis Google Drive."""
+    url_direct = obtenir_lien_direct_drive(url_drive)
+    try:
+        # Lecture du CSV depuis l'URL Google Drive
+        # Note : Google Drive exporte par défaut avec des virgules (",")
+        return pd.read_csv(url_direct, sep=",")
     except Exception:
         try:
-            # Si ça échoue, on essaie avec une virgule (standard international)
-            return pd.read_csv(chemin, sep=",")
+            # Sécurité au cas où le séparateur serait un point-virgule
+            return pd.read_csv(url_direct, sep=";")
         except Exception as e:
-            st.error(f"🚨 Erreur lors de la lecture du fichier CSV : {e}")
+            st.error(
+                f"🚨 Impossible de lire le fichier depuis Google Drive. Vérifiez le partage du lien. Erreur : {e}"
+            )
             return None
 
 
-# Chargement du catalogue
-df = charger_donnees(CSV_PATH)
+# Chargement du catalogue depuis Google Drive
+df = charger_donnees(LIEN_GOOGLE_DRIVE)
 
 if df is not None:
     # --- BARRE LATÉRALE (FILTRES) ---
