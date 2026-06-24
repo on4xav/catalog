@@ -9,8 +9,8 @@ st.title("🕯️ Catalogue de Produits en Ligne")
 st.write("Bienvenue sur notre catalogue. Retrouvez toutes nos références ci-dessous.")
 
 # --- CHARGEMENT DES DONNÉES (CSV) ---
+# Cette ligne est la plus robuste : elle cherche le fichier juste à côté du script main.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# On pointe maintenant vers le fichier .csv
 CSV_PATH = os.path.join(BASE_DIR, "catalogue.csv")
 
 
