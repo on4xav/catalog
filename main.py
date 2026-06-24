@@ -13,7 +13,7 @@ st.write(
 # --- CONFIGURATION GOOGLE DRIVE ---
 # Collez votre lien de partage Google Drive ou Google Sheets ci-dessous
 # ASSUREZ-VOUS QUE LE PARTAGE EST SUR "Tous les utilisateurs disposant du lien"
-LIEN_GOOGLE_DRIVE = "https://docs.google.com/spreadsheets/d/1A2B3C4D5E6F7G8H9I0J/edit?usp=sharing"
+LIEN_GOOGLE_DRIVE = "https://drive.google.com/file/d/1UhleUeHIKmFjsGXFRqahqpgj4Cklb4Fz/view?usp=drive_link"
 
 
 @st.cache_data
