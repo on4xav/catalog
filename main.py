@@ -9,8 +9,9 @@ st.title("🕯️ Catalogue de Produits en Ligne")
 st.write("Bienvenue sur notre catalogue. Retrouvez toutes nos références ci-dessous.")
 
 # --- CHARGEMENT DES DONNÉES ---
-# On définit le chemin absolu vers le fichier Excel pour éviter les erreurs
-EXCEL_PATH = r"C:\PythonProject\catalogue\catalogue.xlsx"
+# Cette ligne trouve automatiquement le dossier actuel du script, sur Windows ou sur GitHub
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+EXCEL_PATH = os.path.join(BASE_DIR, "catalogue.xlsx")
 
 
 @st.cache_data
